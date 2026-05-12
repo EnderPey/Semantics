@@ -1,12 +1,13 @@
 :root {
-    --bg-color: #0f172a;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --accent: #3b82f6;
-    --accent-hover: #2563eb;
-    --glass-bg: rgba(30, 41, 59, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --danger: #ef4444;
+    --bg-color: #f3f4f6; /* Light gray */
+    --text-main: #1f2937; /* Dark slate */
+    --text-muted: #6b7280; /* Gray */
+    --accent: #374151; /* Dark charcoal */
+    --accent-hover: #111827; /* Almost black */
+    --glass-bg: rgba(255, 255, 255, 0.85); /* White glass */
+    --glass-border: rgba(0, 0, 0, 0.05); /* Very subtle border */
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -22,44 +23,15 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
-}
-
-/* Dynamic Background */
-.background-blobs {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: -1;
-    overflow: hidden;
-    filter: blur(100px);
-}
-.blob {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0.4;
-    animation: float 20s infinite alternate ease-in-out;
-}
-.blob-1 {
-    width: 500px; height: 500px;
-    background: #4f46e5;
-    top: -10%; left: -10%;
-}
-.blob-2 {
-    width: 400px; height: 400px;
-    background: #ec4899;
-    bottom: -10%; right: -10%;
-    animation-delay: -5s;
-}
-
-@keyframes float {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(100px, 50px) scale(1.2); }
+    /* Subtle elegant grain texture */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
 }
 
 /* Layout */
 .container {
     max-width: 1000px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 50px 20px;
 }
 
 header {
@@ -68,34 +40,34 @@ header {
 }
 
 header h1 {
+    font-family: 'Playfair Display', serif;
     font-size: 3rem;
-    font-weight: 800;
-    letter-spacing: -1px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
     margin-bottom: 10px;
-    background: linear-gradient(to right, #60a5fa, #c084fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #111827;
 }
 
 header p {
     color: var(--text-muted);
     font-size: 1.1rem;
+    font-weight: 300;
 }
 
 /* Glassmorphism Panels */
 .glass-panel {
     background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--glass-border);
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--shadow);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 .glass-panel:hover {
     transform: translateY(-2px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-hover);
 }
 
 /* Input Section */
@@ -109,8 +81,8 @@ header p {
 textarea {
     width: 100%;
     height: 150px;
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid var(--glass-border);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 16px;
     color: var(--text-main);
@@ -118,10 +90,14 @@ textarea {
     font-size: 1rem;
     resize: vertical;
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 textarea:focus {
-    border-color: var(--accent);
+    border-color: #9ca3af;
+    box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.1);
+}
+textarea::placeholder {
+    color: #9ca3af;
 }
 
 button {
@@ -132,7 +108,7 @@ button {
     padding: 12px 28px;
     border-radius: 8px;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     transition: background 0.3s ease, transform 0.2s ease;
     display: flex;
@@ -149,10 +125,10 @@ button:active {
 
 /* Loader */
 .loader {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #fff;
-    border-bottom-color: transparent;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-bottom-color: #ffffff;
     border-radius: 50%;
     display: inline-block;
     animation: rotation 1s linear infinite;
@@ -175,23 +151,25 @@ button:active {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 .analysis-card h2 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+    font-weight: 600;
     margin-bottom: 16px;
-    color: #e2e8f0;
-    border-bottom: 1px solid var(--glass-border);
+    color: #111827;
+    border-bottom: 1px solid #e5e7eb;
     padding-bottom: 10px;
 }
 
 .analysis-content {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     line-height: 1.7;
-    color: #cbd5e1;
+    color: #374151;
+    font-weight: 300;
 }
 
 /* Charts Grid */
@@ -202,10 +180,63 @@ button:active {
 }
 
 .chart-container h3 {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
+    font-weight: 500;
     margin-bottom: 16px;
     text-align: center;
     color: var(--text-muted);
+}
+
+/* Data Table */
+.data-table-container {
+    overflow-x: auto;
+}
+
+.data-table-container h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+    color: #111827;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+th, td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+th {
+    background-color: #f9fafb;
+    font-weight: 500;
+    color: #4b5563;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+td.seg-id {
+    font-weight: 500;
+    color: #374151;
+    white-space: nowrap;
+}
+
+td.seg-text {
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+tr:last-child td {
+    border-bottom: none;
 }
 
 @media (max-width: 768px) {

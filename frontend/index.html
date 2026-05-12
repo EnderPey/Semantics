@@ -13,10 +13,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="background-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-    </div>
+
 
     <main class="container">
         <header>
@@ -50,6 +47,21 @@
                     <h3>Semantic Entropy (Bits)</h3>
                     <canvas id="entropyChart"></canvas>
                 </div>
+            </div>
+
+            <div class="data-table-container glass-panel">
+                <h3>Segment Reference</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Original Text</th>
+                        </tr>
+                    </thead>
+                    <tbody id="segmentTableBody">
+                        <!-- Table rows injected here -->
+                    </tbody>
+                </table>
             </div>
 
         </section>

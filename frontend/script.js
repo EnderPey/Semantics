@@ -7,13 +7,15 @@ const llmAnalysis = document.getElementById('llmAnalysis');
 
 let sentimentChartInstance = null;
 let entropyChartInstance = null;
+let vibeChartInstance = null;
 
-// Chart.js default theme configuration for dark mode
-Chart.defaults.color = '#94a3b8';
-Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+// Chart.js default theme configuration for light mode
+Chart.defaults.color = '#6b7280';
+Chart.defaults.borderColor = 'rgba(0, 0, 0, 0.05)';
 
 analyzeBtn.addEventListener('click', async () => {
     const text = textInput.value.trim();
+    const level = document.getElementById('analysisLevel').value;
     if (!text) return alert("Please enter some text to analyze.");
 
     // UI Loading state
@@ -26,7 +28,7 @@ analyzeBtn.addEventListener('click', async () => {
         const response = await fetch('http://localhost:8000/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text })
+            body: JSON.stringify({ text, level })
         });
 
         if (!response.ok) {
@@ -37,7 +39,7 @@ analyzeBtn.addEventListener('click', async () => {
         
         // Render data
         renderSynthesis(data.analysis);
-        renderCharts(data.segments, data.sentiment, data.entropy);
+        renderCharts(data.segments, data.sentiment, data.entropy, data.level);
         
         // Show results
         resultsSection.classList.remove('hidden');
@@ -60,12 +62,72 @@ function renderSynthesis(text) {
     llmAnalysis.innerHTML = formattedText;
 }
 
-function renderCharts(labels, sentimentData, entropyData) {
+function renderCharts(labels, sentimentData, entropyData, level) {
     // Destroy previous instances if they exist
     if (sentimentChartInstance) sentimentChartInstance.destroy();
     if (entropyChartInstance) entropyChartInstance.destroy();
+    if (vibeChartInstance) vibeChartInstance.destroy();
 
     const shortLabels = labels.map((_, i) => `Seg ${i+1}`);
+
+    // UI Element References
+    const vibeContainer = document.getElementById('vibeContainer');
+    const sentimentContainer = document.getElementById('sentimentContainer');
+    const entropyContainer = document.getElementById('entropyContainer');
+    const tableContainer = document.getElementById('tableContainer');
+    const chartsGrid = document.getElementById('chartsGrid');
+
+    // Visibility Logic
+    if (level === 'friend') {
+        chartsGrid.style.display = 'block'; 
+        vibeContainer.style.display = 'block';
+        sentimentContainer.style.display = 'none';
+        entropyContainer.style.display = 'none';
+        tableContainer.style.display = 'none';
+
+        // Calculate Overall Vibe
+        let posCount = 0;
+        let negCount = 0;
+        sentimentData.forEach(val => {
+            if (val > 0) posCount++;
+            else negCount++;
+        });
+        const ctxVibe = document.getElementById('vibeChart').getContext('2d');
+        vibeChartInstance = new Chart(ctxVibe, {
+            type: 'doughnut',
+            data: {
+                labels: ['Positive', 'Negative/Neutral'],
+                datasets: [{
+                    data: [posCount, negCount === 0 && posCount === 0 ? 1 : negCount],
+                    backgroundColor: ['#10b981', '#f43f5e']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+        return; // Skip rendering other charts
+    } 
+    
+    // For Mentor and Expert
+    chartsGrid.style.display = 'grid';
+    vibeContainer.style.display = 'none';
+    sentimentContainer.style.display = 'block';
+
+    if (level === 'expert') {
+        entropyContainer.style.display = 'block';
+        tableContainer.style.display = 'block';
+        
+        // Populate data table
+        const tableBody = document.getElementById('segmentTableBody');
+        tableBody.innerHTML = '';
+        labels.forEach((text, i) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td class="seg-id">Seg ${i+1}</td><td class="seg-text">${text}</td>`;
+            tableBody.appendChild(row);
+        });
+    } else {
+        entropyContainer.style.display = 'none';
+        tableContainer.style.display = 'none';
+    }
 
     // Sentiment Line Chart
     const ctxSentiment = document.getElementById('sentimentChart').getContext('2d');

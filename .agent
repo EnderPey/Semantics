@@ -1,7 +1,0 @@
-# Agent Rule for Sentiment Analysis Website
-
-When working on this codebase, always refer to the following documentation files for context, constraints, and definitions:
-
-1. **project_outline.md**: Use this to understand the architectural flow, the roles of the frontend vs backend, and how the LLM fits into the pipeline.
-2. **technologies_versions.md**: Adhere strictly to the technologies and package versions listed here to avoid dependency conflicts.
-3. **semantic_analysis_textbook.md**: Use this for the definitions of Sentiment Analysis, Semantic Entropy, and Linguistic Forensic Synthesis when writing code, prompts, or explanations.

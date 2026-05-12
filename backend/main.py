@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from transformers import pipeline
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -29,12 +29,11 @@ print("Loading BERT model...")
 sentiment_analyzer = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
 
 # Setup Gemini
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-# Using gemini-1.5-flash or gemini-pro (for free tier access)
-model = genai.GenerativeModel('gemini-1.5-flash')
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 class AnalyzeRequest(BaseModel):
     text: str
+    level: str = "expert"
 
 def calculate_entropy(segment: str) -> float:
     tokens = re.findall(r'\b\w+\b', segment.lower())
@@ -74,24 +73,36 @@ async def analyze_text(req: AnalyzeRequest):
         for i, s in enumerate(segments)
     ])
     
+    if req.level == "friend":
+        system_instructions = "Act like a supportive, empathetic friend. Focus entirely on feelings. Keep it casual and warm. Use accessible language and avoid any complex terminology."
+    elif req.level == "mentor":
+        system_instructions = "Act like a wise communication mentor. Provide constructive feedback on the flow and tone of the message. Point out areas of improvement and suggest how the message comes across."
+    else:
+        system_instructions = "You are a professor of Semantic Analysis providing a 'Linguistic Forensic Synthesis'. Frame it as a forensic linguistic evaluation. Make it sound professional and slightly academic, but highly engaging."
+
     prompt = f"""
-You are a professor of Semantic Analysis providing a "Linguistic Forensic Synthesis".
+{system_instructions}
+
 Analyze the following text divided into segments. For each segment, you are provided a sentiment score (-1.0 to 1.0, where -1 is negative and 1 is positive) and a Shannon entropy score (which measures unpredictability/complexity; higher means more unique lexical choices).
 
 Text Segments and Scores:
 {stats_summary}
 
-Based on these metrics, provide a concise, insightful 1-2 paragraph analysis explaining the emotional trajectory (e.g., U-shaped narrative, negative face redress) and cognitive effort (high entropy vs low entropy clichés) of the sender. Frame it as a forensic linguistic evaluation. Make it sound professional and slightly academic, but highly engaging.
+Based on these metrics, provide a concise, insightful 1-2 paragraph analysis explaining the emotional trajectory and cognitive effort of the sender.
 """
 
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt
+        )
         analysis_text = response.text
     except Exception as e:
         print(f"Gemini API Error: {e}")
         analysis_text = "LLM analysis temporarily unavailable. Please check API key configuration."
 
     return {
+        "level": req.level,
         "segments": segments,
         "sentiment": bert_scores,
         "entropy": entropy_scores,

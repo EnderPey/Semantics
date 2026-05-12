@@ -13,7 +13,7 @@ To build a web application that takes user text/messages as input, performs deep
    - **Tech:** Python, FastAPI.
    - **Role:** Receives text, segments it by clauses/sentences, and runs the analytical models. 
    - **NLP Pipeline:** Uses `transformers` (`nlptown/bert-base-multilingual-uncased-sentiment`) to score the sentiment of each segment. Calculates Shannon Entropy for the lexical unpredictability of each segment.
-   - **LLM Integration:** Formats the calculated metrics and original text into a prompt and calls the Gemini API to return a dynamic, human-readable forensic linguistic synthesis.
+   - **LLM Integration:** Formats the calculated metrics and original text into a prompt and calls the Gemini 2.5 Flash API. The prompt is dynamically adjusted based on the user's selected Analysis Level (Friend, Mentor, Expert) to provide tailored feedback.
 
 3. **Deployment Foundation**
    - **Tech:** Docker, Docker Compose, Nginx.
