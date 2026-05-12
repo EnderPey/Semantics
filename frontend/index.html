@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linguistic Forensic Analysis</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="container">
+        <header>
+            <h1>Linguistic Forensic Synthesis</h1>
+            <p>Analyze the emotional trajectory and semantic entropy of your text.</p>
+        </header>
+
+        <section class="input-section glass-panel">
+            <textarea id="textInput" placeholder="Paste the message or text you want to analyze here... e.g. 'I just wanted to reach out and apologize...'"></textarea>
+            <button id="analyzeBtn">
+                <span class="btn-text">Analyze Text</span>
+                <span class="loader hidden"></span>
+            </button>
+        </section>
+
+        <section id="resultsSection" class="results-section hidden">
+            
+            <div class="analysis-card glass-panel">
+                <h2>Forensic Synthesis</h2>
+                <div id="llmAnalysis" class="analysis-content">
+                    <!-- LLM text will be injected here -->
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-container glass-panel">
+                    <h3>Sentiment Arc (Valence)</h3>
+                    <canvas id="sentimentChart"></canvas>
+                </div>
+                <div class="chart-container glass-panel">
+                    <h3>Semantic Entropy (Bits)</h3>
+                    <canvas id="entropyChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
