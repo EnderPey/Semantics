@@ -41,7 +41,7 @@ To achieve zero-latency persona switching, the backend employs **Asynchronous Ba
    ```
 4. **Access the App:** Open your browser and navigate to `http://localhost:8080`.
 
-## 🤖 The Vibecoding Methodology
+## The Vibecoding Methodology
 
 This project is a showcase of **Vibecoding**—a modern paradigm where humans and autonomous AI agents collaborate to build complex systems. 
 
