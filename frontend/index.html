@@ -22,14 +22,7 @@
         </header>
 
         <section class="input-section glass-panel">
-            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 5px;">
-                <label for="analysisLevel" style="font-weight: 500; font-size: 0.95rem; color: #374151;">Analysis Level:</label>
-                <select id="analysisLevel" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #e5e7eb; font-family: 'Inter', sans-serif; background: #ffffff; cursor: pointer; color: #111827; outline: none;">
-                    <option value="friend">Friend (Supportive & Casual)</option>
-                    <option value="mentor">Mentor (Constructive Guidance)</option>
-                    <option value="expert" selected>Expert (Forensic Synthesis)</option>
-                </select>
-            </div>
+
             <textarea id="textInput" placeholder="Paste the message or text you want to analyze here... e.g. 'I just wanted to reach out and apologize...'"></textarea>
             <button id="analyzeBtn">
                 <span class="btn-text">Analyze Text</span>
@@ -40,7 +33,17 @@
         <section id="resultsSection" class="results-section hidden">
             
             <div class="analysis-card glass-panel">
-                <h2>Forensic Synthesis</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; margin-bottom: 16px; padding-bottom: 10px;">
+                    <h2 style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">Analysis Results</h2>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label for="analysisLevel" style="font-weight: 500; font-size: 0.95rem; color: #374151;">Persona:</label>
+                        <select id="analysisLevel" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #e5e7eb; font-family: 'Inter', sans-serif; background: #ffffff; cursor: pointer; color: #111827; outline: none;">
+                            <option value="friend">Friend (Supportive)</option>
+                            <option value="mentor">Mentor (Constructive)</option>
+                            <option value="expert" selected>Expert (Forensic)</option>
+                        </select>
+                    </div>
+                </div>
                 <div id="llmAnalysis" class="analysis-content">
                     <!-- LLM text will be injected here -->
                 </div>

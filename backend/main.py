@@ -1,6 +1,7 @@
 import os
 import re
 import math
+import asyncio
 from collections import Counter
 from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
@@ -33,7 +34,6 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 class AnalyzeRequest(BaseModel):
     text: str
-    level: str = "expert"
 
 def calculate_entropy(segment: str) -> float:
     tokens = re.findall(r'\b\w+\b', segment.lower())
@@ -73,15 +73,15 @@ async def analyze_text(req: AnalyzeRequest):
         for i, s in enumerate(segments)
     ])
     
-    if req.level == "friend":
-        system_instructions = "Act like a supportive, empathetic friend. Focus entirely on feelings. Keep it casual and warm. Use accessible language and avoid any complex terminology."
-    elif req.level == "mentor":
-        system_instructions = "Act like a wise communication mentor. Provide constructive feedback on the flow and tone of the message. Point out areas of improvement and suggest how the message comes across."
-    else:
-        system_instructions = "You are a professor of Semantic Analysis providing a 'Linguistic Forensic Synthesis'. Frame it as a forensic linguistic evaluation. Make it sound professional and slightly academic, but highly engaging."
+    instructions = {
+        "friend": "Act like a supportive, empathetic friend. Focus entirely on feelings. Keep it casual and warm. Use accessible language and avoid any complex terminology.",
+        "mentor": "Act like a wise communication mentor. Provide constructive feedback on the flow and tone of the message. Point out areas of improvement and suggest how the message comes across.",
+        "expert": "You are a professor of Semantic Analysis providing a 'Linguistic Forensic Synthesis'. Frame it as a forensic linguistic evaluation. Make it sound professional and slightly academic, but highly engaging."
+    }
 
-    prompt = f"""
-{system_instructions}
+    async def fetch_analysis(level: str) -> str:
+        prompt = f"""
+{instructions[level]}
 
 The following text is a standalone message from an arbitrary author. Do not assume the user providing this text is the author. Analyze the author of the text based on the segments below. For each segment, you are provided a sentiment score (-1.0 to 1.0, where -1 is negative and 1 is positive) and a Shannon entropy score (which measures unpredictability/complexity).
 
@@ -91,21 +91,30 @@ Text Segments and Scores:
 Based on these metrics, provide a concise, insightful analysis explaining the emotional trajectory and cognitive effort of the sender. 
 IMPORTANT: Limit your response to a maximum of 2 paragraphs.
 """
+        try:
+            response = await client.aio.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt
+            )
+            return response.text
+        except Exception as e:
+            print(f"Gemini API Error ({level}): {e}")
+            return "LLM analysis temporarily unavailable."
 
-    try:
-        response = client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=prompt
-        )
-        analysis_text = response.text
-    except Exception as e:
-        print(f"Gemini API Error: {e}")
-        analysis_text = "LLM analysis temporarily unavailable. Please check API key configuration."
+    # Run all 3 concurrently
+    results = await asyncio.gather(
+        fetch_analysis("friend"),
+        fetch_analysis("mentor"),
+        fetch_analysis("expert")
+    )
 
     return {
-        "level": req.level,
         "segments": segments,
         "sentiment": bert_scores,
         "entropy": entropy_scores,
-        "analysis": analysis_text
+        "analyses": {
+            "friend": results[0],
+            "mentor": results[1],
+            "expert": results[2]
+        }
     }

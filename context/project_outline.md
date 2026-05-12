@@ -13,7 +13,7 @@ To build a web application that takes user text/messages as input, performs deep
    - **Tech:** Python, FastAPI.
    - **Role:** Receives text, segments it by clauses/sentences, and runs the analytical models. 
    - **NLP Pipeline:** Uses `transformers` (`nlptown/bert-base-multilingual-uncased-sentiment`) to score the sentiment of each segment. Calculates Shannon Entropy for the lexical unpredictability of each segment.
-   - **LLM Integration:** Formats the calculated metrics and original text into a prompt and calls the Gemini 2.5 Flash API. The prompt is dynamically adjusted based on the user's selected Analysis Level (Friend, Mentor, Expert) to provide tailored feedback.
+   - **LLM Integration:** Asynchronously batches 3 concurrent calls to the Gemini 2.5 Flash API to generate Friend, Mentor, and Expert personas simultaneously. The entire package is returned to the frontend for instant switching.
 
 3. **Deployment Foundation**
    - **Tech:** Docker, Docker Compose, Nginx.
@@ -23,6 +23,6 @@ To build a web application that takes user text/messages as input, performs deep
 1. User enters text in the web UI.
 2. Frontend sends an HTTP POST request to `/analyze` on the Backend.
 3. Backend NLP models score sentiment and calculate entropy.
-4. Backend prompts Gemini LLM with the scores and text.
-5. Backend returns a JSON response: `{ segments: [...], sentiment: [...], entropy: [...], analysis: "..." }`
-6. Frontend parses the JSON and renders interactive charts and the summary text.
+4. Backend concurrently prompts Gemini LLM for 3 different personas.
+5. Backend returns a JSON response containing arrays for segments, sentiment, and entropy, plus a dictionary of the 3 analyses.
+6. Frontend parses the JSON, caches it globally, and instantly renders interactive charts and summary text based on the dropdown selection.

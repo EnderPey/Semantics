@@ -8,6 +8,15 @@ const llmAnalysis = document.getElementById('llmAnalysis');
 let sentimentChartInstance = null;
 let entropyChartInstance = null;
 let vibeChartInstance = null;
+let globalAnalysisData = null;
+
+const analysisLevel = document.getElementById('analysisLevel');
+analysisLevel.addEventListener('change', (e) => {
+    if (!globalAnalysisData) return;
+    const level = e.target.value;
+    renderSynthesis(globalAnalysisData.analyses[level]);
+    renderCharts(globalAnalysisData.segments, globalAnalysisData.sentiment, globalAnalysisData.entropy, level);
+});
 
 // Chart.js default theme configuration for light mode
 Chart.defaults.color = '#6b7280';
@@ -15,7 +24,6 @@ Chart.defaults.borderColor = 'rgba(0, 0, 0, 0.05)';
 
 analyzeBtn.addEventListener('click', async () => {
     const text = textInput.value.trim();
-    const level = document.getElementById('analysisLevel').value;
     if (!text) return alert("Please enter some text to analyze.");
 
     // UI Loading state
@@ -28,7 +36,7 @@ analyzeBtn.addEventListener('click', async () => {
         const response = await fetch('http://localhost:8000/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text, level })
+            body: JSON.stringify({ text })
         });
 
         if (!response.ok) {
@@ -36,10 +44,12 @@ analyzeBtn.addEventListener('click', async () => {
         }
 
         const data = await response.json();
+        globalAnalysisData = data;
         
-        // Render data
-        renderSynthesis(data.analysis);
-        renderCharts(data.segments, data.sentiment, data.entropy, data.level);
+        // Render data using currently selected dropdown level (default 'expert')
+        const currentLevel = analysisLevel.value;
+        renderSynthesis(data.analyses[currentLevel]);
+        renderCharts(data.segments, data.sentiment, data.entropy, currentLevel);
         
         // Show results
         resultsSection.classList.remove('hidden');
