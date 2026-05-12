@@ -172,6 +172,14 @@ button:active {
     font-weight: 300;
 }
 
+.analysis-content p {
+    margin-bottom: 1rem;
+}
+
+.analysis-content p:last-child {
+    margin-bottom: 0;
+}
+
 /* Charts Grid */
 .charts-grid {
     display: grid;

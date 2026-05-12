@@ -83,12 +83,13 @@ async def analyze_text(req: AnalyzeRequest):
     prompt = f"""
 {system_instructions}
 
-Analyze the following text divided into segments. For each segment, you are provided a sentiment score (-1.0 to 1.0, where -1 is negative and 1 is positive) and a Shannon entropy score (which measures unpredictability/complexity; higher means more unique lexical choices).
+The following text is a standalone message from an arbitrary author. Do not assume the user providing this text is the author. Analyze the author of the text based on the segments below. For each segment, you are provided a sentiment score (-1.0 to 1.0, where -1 is negative and 1 is positive) and a Shannon entropy score (which measures unpredictability/complexity).
 
 Text Segments and Scores:
 {stats_summary}
 
-Based on these metrics, provide a concise, insightful 1-2 paragraph analysis explaining the emotional trajectory and cognitive effort of the sender.
+Based on these metrics, provide a concise, insightful analysis explaining the emotional trajectory and cognitive effort of the sender. 
+IMPORTANT: Limit your response to a maximum of 2 paragraphs.
 """
 
     try:

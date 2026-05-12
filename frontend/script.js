@@ -57,9 +57,15 @@ analyzeBtn.addEventListener('click', async () => {
 
 function renderSynthesis(text) {
     // Basic Markdown to HTML (bolding)
-    const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                              .replace(/\n/g, '<br><br>');
-    llmAnalysis.innerHTML = formattedText;
+    const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Split by newlines and wrap in <p> tags
+    const paragraphs = formattedText.split(/\n+/)
+                                    .filter(p => p.trim() !== '')
+                                    .map(p => `<p>${p}</p>`)
+                                    .join('');
+                                    
+    llmAnalysis.innerHTML = paragraphs;
 }
 
 function renderCharts(labels, sentimentData, entropyData, level) {
