@@ -40,3 +40,15 @@ To achieve zero-latency persona switching, the backend employs **Asynchronous Ba
    docker-compose up --build
    ```
 4. **Access the App:** Open your browser and navigate to `http://localhost:8080`.
+
+## 🤖 The Vibecoding Methodology
+
+This project is a showcase of **Vibecoding**—a modern paradigm where humans and autonomous AI agents collaborate to build complex systems. 
+
+Rather than relying solely on traditional documentation for human developers, this repository is structurally designed to natively onboard and constrain autonomous AI agents:
+
+- **`AI_SETUP.md`**: An alternate setup guide specifically tailored for Large Language Models. It maps out the directory structure, environment variables, and Docker orchestration commands so any agent can instantly understand how to operate the codebase.
+- **`.agent/rules/`**: This directory contains local workspace rules (`workspace.agent`). These act as strict guardrails, forcing the AI to consult context files and document architectural changes before pushing code.
+- **`context/`**: A dedicated knowledge base containing markdown files that define the theoretical parameters of the application (e.g., Semantic Entropy textbook definitions). Agents read this *before* writing code to ensure their implementations are theoretically sound.
+
+By designing the repository around these constraints, we ensure that autonomous agents can freely build, debug, and refactor the platform without breaking its core architectural and philosophical vision.
