@@ -2,7 +2,7 @@
 
 ![UI Showcase](misc/ui_showcase.png)
 
-## The Evolution of a Vibe
+## The Evolution of this Project
 
 This project began as a single, monolithic Python script designed to test local semantic analysis using HuggingFace `transformers`. Initially, it simply parsed text, scored the sentiment using a multilingual BERT model, and applied a custom mathematical formula to calculate the Shannon Entropy (the cognitive unpredictability) of the author's word choices.
 
