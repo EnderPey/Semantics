@@ -22,6 +22,14 @@
         </header>
 
         <section class="input-section glass-panel">
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 5px;">
+                <label for="analysisLevel" style="font-weight: 500; font-size: 0.95rem; color: #374151;">Analysis Level:</label>
+                <select id="analysisLevel" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #e5e7eb; font-family: 'Inter', sans-serif; background: #ffffff; cursor: pointer; color: #111827; outline: none;">
+                    <option value="friend">Friend (Supportive & Casual)</option>
+                    <option value="mentor">Mentor (Constructive Guidance)</option>
+                    <option value="expert" selected>Expert (Forensic Synthesis)</option>
+                </select>
+            </div>
             <textarea id="textInput" placeholder="Paste the message or text you want to analyze here... e.g. 'I just wanted to reach out and apologize...'"></textarea>
             <button id="analyzeBtn">
                 <span class="btn-text">Analyze Text</span>
@@ -38,18 +46,24 @@
                 </div>
             </div>
 
-            <div class="charts-grid">
-                <div class="chart-container glass-panel">
+            <div class="charts-grid" id="chartsGrid">
+                <div class="chart-container glass-panel" id="vibeContainer" style="display: none; grid-column: 1 / -1;">
+                    <h3>Overall Vibe</h3>
+                    <div style="max-height: 300px; display: flex; justify-content: center;">
+                        <canvas id="vibeChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container glass-panel" id="sentimentContainer">
                     <h3>Sentiment Arc (Valence)</h3>
                     <canvas id="sentimentChart"></canvas>
                 </div>
-                <div class="chart-container glass-panel">
+                <div class="chart-container glass-panel" id="entropyContainer">
                     <h3>Semantic Entropy (Bits)</h3>
                     <canvas id="entropyChart"></canvas>
                 </div>
             </div>
 
-            <div class="data-table-container glass-panel">
+            <div class="data-table-container glass-panel" id="tableContainer">
                 <h3>Segment Reference</h3>
                 <table>
                     <thead>
