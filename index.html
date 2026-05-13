@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linguistic Forensic Analysis</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="demo-banner">
+        ⚡ Static Demo — Sentiment scores are simulated. Run the full Docker backend for real BERT + Gemini analysis.
+    </div>
+
+    <main class="container">
+        <header>
+            <h1>Linguistic Forensic Synthesis</h1>
+            <p>Analyze the emotional trajectory and semantic entropy of your text.</p>
+        </header>
+
+        <section class="input-section glass-panel">
+
+            <textarea id="textInput" placeholder="Paste the message or text you want to analyze here... e.g. 'I just wanted to reach out and apologize...'"></textarea>
+            <button id="analyzeBtn">
+                <span class="btn-text">Analyze Text</span>
+                <span class="loader hidden"></span>
+            </button>
+        </section>
+
+        <section id="resultsSection" class="results-section hidden">
+            
+            <div class="analysis-card glass-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; margin-bottom: 16px; padding-bottom: 10px;">
+                    <h2 style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">Analysis Results</h2>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label for="analysisLevel" style="font-weight: 500; font-size: 0.95rem; color: #374151;">Persona:</label>
+                        <select id="analysisLevel" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #e5e7eb; font-family: 'Inter', sans-serif; background: #ffffff; cursor: pointer; color: #111827; outline: none;">
+                            <option value="friend">Friend (Supportive)</option>
+                            <option value="mentor">Mentor (Constructive)</option>
+                            <option value="expert" selected>Expert (Forensic)</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="llmAnalysis" class="analysis-content">
+                    <!-- LLM text will be injected here -->
+                </div>
+            </div>
+
+            <div class="charts-grid" id="chartsGrid">
+                <div class="chart-container glass-panel" id="vibeContainer" style="display: none; grid-column: 1 / -1;">
+                    <h3>Overall Vibe</h3>
+                    <div style="max-height: 300px; display: flex; justify-content: center;">
+                        <canvas id="vibeChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container glass-panel" id="sentimentContainer">
+                    <h3>Sentiment Arc (Valence)</h3>
+                    <canvas id="sentimentChart"></canvas>
+                </div>
+                <div class="chart-container glass-panel" id="entropyContainer">
+                    <h3>Semantic Entropy (Bits)</h3>
+                    <canvas id="entropyChart"></canvas>
+                </div>
+            </div>
+
+            <div class="data-table-container glass-panel" id="tableContainer">
+                <h3>Segment Reference</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Original Text</th>
+                        </tr>
+                    </thead>
+                    <tbody id="segmentTableBody">
+                        <!-- Table rows injected here -->
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
