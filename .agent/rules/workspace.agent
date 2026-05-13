@@ -2,10 +2,21 @@
 
 When working on this codebase, always refer to the following documentation files for context, constraints, and definitions:
 
-1. **context/project_outline.md**: Use this to understand the architectural flow, the roles of the frontend vs backend, and how the LLM fits into the pipeline.
-2. **context/technologies_versions.md**: Adhere strictly to the technologies and package versions listed here to avoid dependency conflicts.
-3. **context/semantic_analysis_textbook.md**: Use this for the definitions of Sentiment Analysis, Semantic Entropy, and Linguistic Forensic Synthesis when writing code, prompts, or explanations.
+1. **context/INDEX.md**: Start here. Use this directory map to identify which context file is relevant to your current task before reading any others.
+2. **context/project_outline.md**: Use this to understand the architectural flow, the roles of the frontend vs backend, and how the LLM fits into the pipeline.
+3. **context/technologies_versions.md**: Adhere strictly to the technologies and package versions listed here to avoid dependency conflicts.
+4. **context/semantic_analysis_textbook.md**: Use this for the definitions of Sentiment Analysis, Semantic Entropy, and Linguistic Forensic Synthesis when writing code, prompts, or explanations.
 
+## Testing & Verification
+- Before committing any backend changes, run the test suite in mock mode:
+  ```
+  cd backend && USE_MOCK_LLM=true pytest tests/ -v
+  ```
+- If the FastAPI server crashes or throws errors, immediately read `backend/logs/error.log` for the full traceback before attempting a fix.
 
+## Mock Mode
+- Set `USE_MOCK_LLM=true` in the `.env` file (or export it in your shell) to bypass all Gemini API calls. This returns pre-written mock analyses and saves API credits during development and testing.
+
+## Documentation Updates
 After every plan, update all the markdown files in the context folder to reflect the changes you have made. 
 Then run a 'git status' to see what changes you have made and if there is anything else you need to do. If there is commit the changes and push them.

@@ -2,6 +2,7 @@ import os
 import re
 import math
 import asyncio
+import logging
 from collections import Counter
 from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
@@ -12,6 +13,23 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+
+# ----- Logging Configuration -----
+os.makedirs("logs", exist_ok=True)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("logs/error.log"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# ----- Mock Mode -----
+USE_MOCK_LLM = os.getenv("USE_MOCK_LLM", "false").lower() == "true"
+if USE_MOCK_LLM:
+    logger.info("🧪 MOCK MODE ENABLED — Gemini API calls will be bypassed.")
 
 # Setup FastAPI
 app = FastAPI(title="Sentiment Analysis API")
@@ -26,11 +44,16 @@ app.add_middleware(
 )
 
 # Load BERT Model
-print("Loading BERT model...")
+logger.info("Loading BERT model...")
 sentiment_analyzer = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
+logger.info("BERT model loaded successfully.")
 
-# Setup Gemini
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+# Setup Gemini (skip if in mock mode)
+if not USE_MOCK_LLM:
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+    logger.info("Gemini client initialized.")
+else:
+    client = None
 
 class AnalyzeRequest(BaseModel):
     text: str
@@ -79,7 +102,18 @@ async def analyze_text(req: AnalyzeRequest):
         "expert": "You are a professor of Semantic Analysis providing a 'Linguistic Forensic Synthesis'. Frame it as a forensic linguistic evaluation. Make it sound professional and slightly academic, but highly engaging."
     }
 
+    # ----- Mock LLM Responses -----
+    mock_responses = {
+        "friend": "Hey, it looks like the author was going through a mix of emotions here. Some parts feel really warm and positive, while others carry a heavier, more uncertain tone. Overall though, the vibe is genuine and heartfelt.\n\nIt seems like they put real thought into what they were saying — the word choices aren't random, they're intentional. That kind of effort shows they really care about getting their message across.",
+        "mentor": "The emotional arc of this message reveals a thoughtful communicator who transitions between vulnerability and assertiveness. The sentiment trajectory suggests the author began cautiously before building confidence in their core message.\n\nFrom a structural standpoint, the entropy scores indicate deliberate lexical choices rather than stream-of-consciousness writing. This is a sign of someone who edits mentally before committing words — a strong communication habit worth reinforcing.",
+        "expert": "Linguistic Forensic Synthesis: The semantic trajectory of this text exhibits a measurable oscillation between affective valence states, with the author's sentiment arc progressing from a neutral-to-negative baseline toward a distinctly positive terminal segment. The Shannon entropy values remain moderate throughout, suggesting controlled lexical diversity rather than impulsive verbalization.\n\nThe cognitive load distribution, as evidenced by entropy variance across segments, indicates a pre-meditated compositional strategy. The author demonstrates metacognitive awareness of their audience, calibrating emotional intensity against informational density in a manner consistent with high-stakes interpersonal communication."
+    }
+
     async def fetch_analysis(level: str) -> str:
+        if USE_MOCK_LLM:
+            logger.info(f"Mock response generated for persona: {level}")
+            return mock_responses[level]
+
         prompt = f"""
 {instructions[level]}
 
@@ -98,7 +132,7 @@ IMPORTANT: Limit your response to a maximum of 2 paragraphs.
             )
             return response.text
         except Exception as e:
-            print(f"Gemini API Error ({level}): {e}")
+            logger.error(f"Gemini API Error ({level}): {e}", exc_info=True)
             return "LLM analysis temporarily unavailable."
 
     # Run all 3 concurrently

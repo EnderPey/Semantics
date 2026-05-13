@@ -48,7 +48,10 @@ This project is a showcase of **Vibecoding**—a modern paradigm where humans an
 Rather than relying solely on traditional documentation for human developers, this repository is structurally designed to natively onboard and constrain autonomous AI agents:
 
 - **`AI_SETUP.md`**: An alternate setup guide specifically tailored for Large Language Models. It maps out the directory structure, environment variables, and Docker orchestration commands so any agent can instantly understand how to operate the codebase.
-- **`.agent/rules/`**: This directory contains local workspace rules (`workspace.agent`). These act as strict guardrails, forcing the AI to consult context files and document architectural changes before pushing code.
-- **`context/`**: A dedicated knowledge base containing markdown files that define the theoretical parameters of the application (e.g., Semantic Entropy textbook definitions). Agents read this *before* writing code to ensure their implementations are theoretically sound.
+- **`.agent/rules/`**: This directory contains local workspace rules (`workspace.agent`). These act as strict guardrails, forcing the AI to consult context files, run automated tests, and document architectural changes before pushing code.
+- **`context/`**: A dedicated knowledge base containing markdown files that define the theoretical parameters of the application (e.g., Semantic Entropy textbook definitions). Agents start with `context/INDEX.md` to quickly navigate to the right file for their task.
+- **Mock Mode (`USE_MOCK_LLM`)**: Agents can set `USE_MOCK_LLM=true` to bypass the Gemini API entirely. The backend returns realistic pre-written analyses for all 3 personas, allowing safe, free development and testing without API credentials.
+- **Automated Test Suite**: A `pytest` test suite in `backend/tests/` validates the API response structure, error handling, and score ranges. Agents are required by the workspace rules to run `pytest` before committing.
+- **File-Based Error Logging**: Backend errors are written to `backend/logs/error.log` with full tracebacks, giving agents an explicit file path to read when debugging crashes.
 
 By designing the repository around these constraints, we ensure that autonomous agents can freely build, debug, and refactor the platform without breaking its core architectural and philosophical vision.
